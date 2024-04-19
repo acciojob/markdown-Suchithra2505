@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import marked from 'marked';
 import './App.css';
@@ -7,11 +6,17 @@ const App = () => {
   const [markdown, setMarkdown] = useState('');
   const [html, setHtml] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const convertMarkdownToHtml = () => {
       setIsLoading(true);
-      setHtml(marked(markdown));
+      try {
+        setHtml(marked(markdown));
+        setError(null);
+      } catch (err) {
+        setError('An error occurred while converting markdown to HTML.');
+      }
       setIsLoading(false);
     };
 
@@ -33,6 +38,8 @@ const App = () => {
       <div className="preview">
         {isLoading ? (
           <p className="loading">Loading...</p>
+        ) : error ? (
+          <p className="error">{error}</p>
         ) : (
           <div dangerouslySetInnerHTML={{ __html: html }} />
         )}
@@ -43,4 +50,3 @@ const App = () => {
 };
 
 export default App;
-
